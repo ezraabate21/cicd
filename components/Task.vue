@@ -1,24 +1,32 @@
 <template>
-   <div
-    @dblclick="$emit('toggle-reminder', task.id)"
-    :class="[task.reminder ? 'reminder' : '', 'task']"
-  >
+  <div> 
+    <div :key="task.id" v-for="task in tasks" :class="[task.reminder ? 'reminder' : '', 'task']" @dblclick="updateReminder(task.id)">
     <h5>
       {{ task.name }}
-      <i @click="$emit('delete-task', task.id)" class="fas fa-times"></i>
+      <font-awesome-icon class="fas" :icon="['fas', 'times']"  @click="removeTask(task.id)"/>
     </h5>
     <h5>{{ task.day }}</h5>
+</div>
   </div>
 </template>
 
 
 
 <script>
+import {mapState,mapActions,mapGetters,mapMutations} from 'vuex'
 export default {
    name:'Task',
-   props:{
-       task: Object
-   } 
+   computed: mapState(["tasks"]),
+   methods: {
+   ...mapActions(["update","delete"]),
+    updateReminder(id){
+    this.update(id)
+  },
+  removeTask(id){
+    this.delete(id)
+  }
+
+   }
 }
 </script>
 
@@ -27,6 +35,8 @@ export default {
 <style>
 .fas {
   color: red;
+  float: right;
+  margin-top: 20px;
 }
 
 .task {
@@ -34,6 +44,7 @@ export default {
   margin: 5px;
   padding: 10px 20px;
   cursor: pointer;
+
 }
 
 .task.reminder {
